@@ -1,32 +1,34 @@
-from fastapi import FastAPI, UploadFile, File, Request, Response
+from fastapi import FastAPI, UploadFile, File, Request, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import chat
+import os
 
 app = FastAPI()
 
-# CORS middleware
+# CORS — allow both local + prod
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # IMPORTANT for Vercel
+    allow_origins=[
+        "http://localhost:3000",
+        "https://genai-delta.vercel.app",
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Handle preflight explicitly (Vercel fix)
+# Explicit OPTIONS handler (CRITICAL for Vercel)
 @app.options("/{path:path}")
-async def preflight_handler(request: Request, path: str):
+async def preflight_handler(path: str, request: Request):
     response = Response()
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    origin = request.headers.get("origin")
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
 
 app.include_router(chat.router)
-
-@app.post("/upload-image/")
-async def upload_image(file: UploadFile = File(...)):
-    return {"reply": f"Image received: {file.filename}"}
 
 @app.get("/")
 def root():
