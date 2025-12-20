@@ -1,0 +1,264 @@
+============================================================
+                 GENAI-APP FULL DOCUMENTATION
+                 Backend + Frontend (Start to End)
+============================================================
+
+============================================================
+1. PROJECT OVERVIEW
+============================================================
+
+GENAI-APP is a full-stack application consisting of:
+
+Backend: FastAPI (Python)
+Frontend: React (JavaScript)
+
+Purpose:
+--------
+The application provides a chat interface where a user sends
+a message through the frontend. The backend receives the 
+message, processes it using AI service logic, and returns a 
+response back to the frontend.
+
+============================================================
+2. BACKEND DOCUMENTATION (FASTAPI)
+============================================================
+
+Backend Folder Structure:
+-------------------------
+backend/
+│
+├── app/
+│   ├── routers/
+│   │   └── chat.py
+│   │
+│   ├── services/
+│   │   └── ai_service.py
+│   │
+│   ├── config.py
+│   └── main.py
+│
+└── requirements.txt
+
+
+--------------------------------------------
+2.1 main.py
+--------------------------------------------
+This is the entry point of the FastAPI backend.
+
+Responsibilities:
+- Creates FastAPI application instance
+- Enables CORS for frontend
+- Registers routers
+- Starts the application server
+
+Example behavior:
+- Runs on http://localhost:8000
+- Exposes /api/chat endpoint via router
+
+
+--------------------------------------------
+2.2 routers/chat.py
+--------------------------------------------
+Handles all chat-related API endpoints.
+
+Responsibilities:
+- Accept POST requests from frontend
+- Extract user message from request body
+- Call AI service function
+- Return the AI response to frontend
+
+Example logic:
+POST /api/chat
+Input: { "message": "Hello" }
+Output: { "response": "AI generated reply" }
+
+
+--------------------------------------------
+2.3 services/ai_service.py
+--------------------------------------------
+Contains the logic that processes messages using AI.
+
+Responsibilities:
+- Process the incoming message
+- Call external AI API or internal model
+- Format and return the final response
+
+This file is the "brain" of the backend.
+
+
+--------------------------------------------
+2.4 config.py
+--------------------------------------------
+Used for application configuration.
+
+Stores:
+- API keys
+- Environment variables
+- App-level settings
+
+Usually loaded through python-dotenv.
+
+
+--------------------------------------------
+2.5 requirements.txt
+--------------------------------------------
+Contains dependencies required to run backend.
+
+Common packages:
+fastapi
+uvicorn
+requests
+python-dotenv
+
+Backend Startup Command:
+------------------------
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+Backend URL:
+------------
+http://localhost:8000
+
+
+============================================================
+3. FRONTEND DOCUMENTATION (REACT)
+============================================================
+
+Frontend Folder Structure:
+--------------------------
+frontend/
+│
+├── src/
+│   ├── components/
+│   │   └── ChatBox.jsx
+│   │
+│   ├── services/
+│   │   └── api.js
+│   │
+│   ├── styles/
+│   │   └── ChatBox.css
+│   │
+│   ├── App.js
+│   ├── index.js
+│   └── ...
+│
+├── package.json
+└── README.md
+
+
+--------------------------------------------
+3.1 ChatBox.jsx
+--------------------------------------------
+Main UI component where chat happens.
+
+Responsibilities:
+- Capture user message
+- Display chat history
+- Call API service
+- Render AI response
+
+Uses React hooks:
+- useState for message input
+- useState for chat history
+
+
+--------------------------------------------
+3.2 api.js
+--------------------------------------------
+Handles API communication between frontend and backend.
+
+Responsibilities:
+- Send POST request to backend
+- Receive AI response
+- Return data to ChatBox.jsx
+
+Example:
+POST to http://localhost:8000/api/chat
+
+
+--------------------------------------------
+3.3 ChatBox.css
+--------------------------------------------
+Defines the chat UI styling.
+
+Handles:
+- Layout
+- Text bubble styles
+- Container styling
+- User/Bot message colors
+
+
+--------------------------------------------
+3.4 App.js
+--------------------------------------------
+App entry component.
+
+Responsibilities:
+- Renders ChatBox.jsx
+- Manages app-level layout
+
+
+--------------------------------------------
+3.5 index.js
+--------------------------------------------
+Bootstraps the React application.
+
+Responsibilities:
+- Mount React app to the DOM
+- Import global styles
+
+
+Frontend Startup Command:
+-------------------------
+cd frontend
+npm install
+npm start
+
+Frontend URL:
+-------------
+http://localhost:3000
+
+
+
+============================================================
+4. HOW FRONTEND AND BACKEND COMMUNICATE
+============================================================
+
+1. User types message in ChatBox.
+2. ChatBox calls sendMessage() from api.js.
+3. api.js sends POST request to:
+   http://localhost:8000/api/chat
+4. chat.py (FastAPI router) receives the message.
+5. chat.py sends message to ai_service.py.
+6. ai_service.py processes and returns AI response.
+7. chat.py returns response back to frontend.
+8. ChatBox.jsx updates UI and displays the message.
+
+
+============================================================
+5. HOW TO RUN THE FULL PROJECT
+============================================================
+
+STEP 1 — Run Backend
+--------------------
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+Runs on: http://localhost:8000
+
+
+STEP 2 — Run Frontend
+----------------------
+cd frontend
+npm install
+npm start
+
+Runs on: http://localhost:3000
+
+
+============================================================
+6. END OF DOCUMENTATION
+============================================================
+
