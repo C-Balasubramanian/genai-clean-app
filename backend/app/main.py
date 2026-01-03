@@ -33,21 +33,40 @@
 # @app.get("/")
 # def root():
 #     return {"message": "GenAI API Running"}
+# from fastapi import FastAPI
+# from fastapi.middleware.cors import CORSMiddleware
+# from app.routers import chat
+
+# app = FastAPI()
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=[
+#         "http://localhost:3000",
+#         "https://genai-delta.vercel.app",
+#     ],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
+# app.include_router(chat.router)
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import chat
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
-        "https://genai-delta.vercel.app",
+        "https://genai-delta.vercel.app",   # frontend
+        "http://localhost:3000",            # local dev
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(chat.router)
+@app.post("/chat")
+async def chat(payload: dict):
+    return {"message": "CORS works"}
